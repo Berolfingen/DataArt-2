@@ -12,6 +12,7 @@ import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,7 +46,8 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
-        new DownloadImageTask(holder.photo).execute(ArrayListApex.get(position).getPhoto());
+        //new DownloadImageTask(holder.photo).execute(ArrayListApex.get(position).getPhoto());
+        Picasso.with(context).load(ArrayListApex.get(position).getPhoto()).resize(250,250).into(holder.photo);
         holder.id.setText(ArrayListApex.get(position).getId());
         holder.title.setText(ArrayListApex.get(position).getTitle());
         final String mimeType = "text/html";
@@ -64,7 +66,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
 
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    /*private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
         public DownloadImageTask(ImageView bmImage) {
@@ -86,7 +88,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }
-    }
+    }*/
 }
 
 

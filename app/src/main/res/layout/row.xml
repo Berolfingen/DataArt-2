@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:padding="4dp"
               android:orientation="vertical"
-              android:weightSum="1">
+              android:weightSum="1" android:gravity="center_horizontal|fill">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -17,23 +17,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-            <TextView
-                    android:id="@+id/id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ID"
-                    android:textColor="#166CED"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_gravity="left"/>
-            <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#D64530"
-                    android:text="TITLE"
-                    android:layout_gravity="center"/>
-
         </LinearLayout>
+        <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#D64530"
+                android:text="TITLE"
+                />
 
 
     </LinearLayout>
@@ -43,12 +34,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/original_akrobaty"/>
+            android:src="@drawable/original_akrobaty"
+            android:adjustViewBounds="true"/>
 
     <WebView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/content" />
+            android:id="@+id/content"
+            android:adjustViewBounds="true"/>
 
 </LinearLayout>
 
