@@ -1,5 +1,6 @@
 package com.leo.myapplication14.app;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
+    Context context = this;
     ListView list;
     ApexAdapter adapter;
     ArrayList<Apex> apexArrayList;
@@ -28,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
         list =(ListView)findViewById(R.id.list);
+
         apexArrayList = new ArrayList<>();
         new ApexAsynTask().execute();
 
@@ -71,16 +74,17 @@ public class MainActivity extends ActionBarActivity {
                 for (int i = 0; i <jArray.length() ; i++) {
                     Apex apex = new Apex();
                     JSONObject jRealObject = jArray.getJSONObject(i);
-                    apex.setId(jRealObject.getString("id"));
                     apex.setTitle(jRealObject.getString("title"));
                     apex.setPhoto(jRealObject.getString("photo"));
                     apex.setContent(jRealObject.getString("content"));
+                    apex.setUrl(jRealObject.getString("url"));
                     apexArrayList.add(apex);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            ApexAdapter adapter = new ApexAdapter(getApplicationContext(),R.layout.row,apexArrayList);
+
+            ApexAdapter adapter = new ApexAdapter(context,R.layout.row,apexArrayList);
             list.setAdapter(adapter);
         }
     }

@@ -1,9 +1,13 @@
 package com.leo.myapplication14.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,31 +42,32 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
             convertView= vi.inflate(Resource,null);
             holder= new ViewHolder();
             holder.photo=(ImageView)convertView.findViewById(R.id.photo);
-            holder.id = (TextView) convertView.findViewById(R.id.id);
             holder.title=(TextView)convertView.findViewById(R.id.title);
             holder.content=(WebView)convertView.findViewById(R.id.content);
-
+            holder.url=(TextView)convertView.findViewById(R.id.url);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
         //new DownloadImageTask(holder.photo).execute(ArrayListApex.get(position).getPhoto());
         Picasso.with(context).load(ArrayListApex.get(position).getPhoto()).resize(250,250).into(holder.photo);
-        holder.id.setText(ArrayListApex.get(position).getId());
         holder.title.setText(ArrayListApex.get(position).getTitle());
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
         String html=ArrayListApex.get(position).getContent();
         holder.content.getSettings().setJavaScriptEnabled(true);
-        holder.content.loadDataWithBaseURL("",html,mimeType,encoding,"");
+        holder.content.loadDataWithBaseURL("", html, mimeType, encoding, "");
+        //holder.url.setClickable(true);
+        holder.url.setText(Html.fromHtml("<a href="+ArrayListApex.get(position).getUrl()+">Подробнее</a>"));
+        holder.url.setMovementMethod(LinkMovementMethod.getInstance());
         return convertView;
     }
 
     static class ViewHolder {
         public ImageView photo;
-        public TextView id;
         public TextView title;
         public WebView content;
+        public TextView url;
 
     }
 
