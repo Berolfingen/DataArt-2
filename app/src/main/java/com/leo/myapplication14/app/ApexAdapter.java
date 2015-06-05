@@ -36,8 +36,8 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
         if(convertView==null){
             convertView= vi.inflate(Resource,null);
             holder= new ViewHolder();
@@ -57,9 +57,17 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         String html=ArrayListApex.get(position).getContent();
         holder.content.getSettings().setJavaScriptEnabled(true);
         holder.content.loadDataWithBaseURL("", html, mimeType, encoding, "");
-        //holder.url.setClickable(true);
-        holder.url.setText(Html.fromHtml("<a href="+ArrayListApex.get(position).getUrl()+">Подробнее</a>"));
-        holder.url.setMovementMethod(LinkMovementMethod.getInstance());
+        holder.url.setClickable(true);
+       // holder.url.setText(Html.fromHtml("<a href="+ArrayListApex.get(position).getUrl()+">Подробнее</a>"));
+       // holder.url.setMovementMethod(LinkMovementMethod.getInstance());
+        holder.url.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(v.getContext(),News.class);
+                myIntent.putExtra("url",ArrayListApex.get(position).getUrl());
+                v.getContext().startActivity(myIntent);
+            }
+        });
         return convertView;
     }
 

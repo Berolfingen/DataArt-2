@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
+
     Context context = this;
     ListView list;
     ApexAdapter adapter;
