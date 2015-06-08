@@ -26,7 +26,21 @@ public class Apex {
     }
 
     public String getContent() {
-        return "<html>"+content+"</html>";
+        StringBuilder result = new StringBuilder("");
+        result.append("<html>");
+        int count=0;
+        for(int i=0;i<content.length();i++){
+           result.append(content.substring(i,i+1));
+           if(isCyrillic(content.charAt(i))) count++;
+           if(count==50) break;
+        }
+        result.append("...");
+        result.append("</html>");
+        return  result.toString();
+    }
+
+    private boolean isCyrillic(char c) {
+        return Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(c));
     }
 
     public void setContent(String content) {
@@ -40,4 +54,5 @@ public class Apex {
     public void setUrl(String url) {
         this.url = url;
     }
+
 }
