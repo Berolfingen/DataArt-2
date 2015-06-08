@@ -35,7 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:src="@drawable/original_akrobaty"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            />
 
     <WebView
             android:layout_width="match_parent"
