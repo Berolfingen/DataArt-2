@@ -38,7 +38,6 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
             holder.title=(TextView)convertView.findViewById(R.id.title);
             holder.title.setClickable(true);
             holder.content=(WebView)convertView.findViewById(R.id.content);
-            holder.content.setClickable(true);
             holder.url=(TextView)convertView.findViewById(R.id.url);
             convertView.setTag(holder);
         }else {
@@ -69,7 +68,6 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         holder.url.setOnClickListener(ocUrl);
         holder.photo.setOnClickListener(ocUrl);
         holder.title.setOnClickListener(ocUrl);
-        holder.content.setOnClickListener(ocUrl);
 
         return convertView;
     }

@@ -5,7 +5,8 @@
               android:layout_height="match_parent"
               android:padding="4dp"
               android:orientation="vertical"
-              android:weightSum="1" android:gravity="center_horizontal|fill">
+              android:weightSum="1" android:gravity="center_horizontal|fill"
+             >
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -15,7 +16,7 @@
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
         </LinearLayout>
         <TextView
@@ -23,8 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#D64530"
-                android:text="TITLE"
-                />
+                android:text="TITLE"/>
 
 
     </LinearLayout>

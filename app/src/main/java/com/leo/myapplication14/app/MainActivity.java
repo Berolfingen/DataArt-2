@@ -1,11 +1,15 @@
 package com.leo.myapplication14.app;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +24,6 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
-
     Context context = this;
     ListView list;
     ApexAdapter adapter;
@@ -28,16 +31,20 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-        list =(ListView)findViewById(R.id.list);
+        Intent myIntent = new Intent(this,Miniature.class);
+        startActivity(myIntent);
 
+        list =(ListView)findViewById(R.id.list);
         apexArrayList = new ArrayList<>();
         new ApexAsynTask().execute();
 
     }
 
     private class ApexAsynTask extends AsyncTask<Void, Void, String> {
+
+
+
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultJson = "";
