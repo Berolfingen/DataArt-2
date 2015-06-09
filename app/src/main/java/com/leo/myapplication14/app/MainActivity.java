@@ -90,6 +90,7 @@ public class MainActivity extends ActionBarActivity {
                     apex.setPhoto(jRealObject.getString("photo"));
                     apex.setContent(jRealObject.getString("content"));
                     apex.setUrl(jRealObject.getString("url"));
+                    apex.setCreated_at(jRealObject.getString("created_at"));
                     apexArrayList.add(apex);
                 }
             } catch (JSONException e) {

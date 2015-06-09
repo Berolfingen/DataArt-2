@@ -41,6 +41,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
             holder.title.setClickable(true);
             holder.content=(WebView)convertView.findViewById(R.id.content);
             holder.url=(TextView)convertView.findViewById(R.id.url);
+            holder.date=(TextView)convertView.findViewById(R.id.date);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
@@ -52,6 +53,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
                 .error(R.drawable.placeholder)
                 .into(holder.photo);
         holder.title.setText(ArrayListApex.get(position).getTitle());
+        holder.date.setText("Дата размещения "+ArrayListApex.get(position).getCreated_at());
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
         String html=ArrayListApex.get(position).getContent();
@@ -82,6 +84,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         public TextView title;
         public WebView content;
         public TextView url;
+        public TextView date;
     }
 }
 

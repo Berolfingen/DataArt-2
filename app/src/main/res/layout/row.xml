@@ -47,13 +47,30 @@
             android:layout_height="wrap_content"
             android:id="@+id/content"
             android:adjustViewBounds="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Дата размещения"
+            android:id="@+id/date" android:layout_weight="0.04" android:layout_gravity="right"
+            android:textSize="14dp"
+            android:textColor="#000000"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/details"
             android:id="@+id/url"
-            android:textColorLink="#576586"/>
+            android:textColorLink="#000000"
+            android:textColor="#00BFFF"
+            android:textSize="18dp"
+            android:textStyle="bold" android:layout_gravity="right"
+            android:paddingBottom="3dp"/>
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="4dp"
+            android:background="#000000"/>
+
 
 </LinearLayout>
 
