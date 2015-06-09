@@ -2,9 +2,10 @@ package com.leo.myapplication14.app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.view.*;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -35,6 +36,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
             holder= new ViewHolder();
             holder.photo=(ImageView)convertView.findViewById(R.id.photo);
             holder.photo.setClickable(true);
+            holder.photo.setAdjustViewBounds(true);
             holder.title=(TextView)convertView.findViewById(R.id.title);
             holder.title.setClickable(true);
             holder.content=(WebView)convertView.findViewById(R.id.content);
@@ -45,7 +47,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         }
 
         Picasso.with(context).load(ArrayListApex.get(position).getPhoto())
-                .resize(250, 250)
+                .resize(MainActivity.screenWidth,MainActivity.screenHeight/2)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .into(holder.photo);
@@ -54,6 +56,9 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         final String encoding = "UTF-8";
         String html=ArrayListApex.get(position).getContent();
         holder.content.getSettings().setJavaScriptEnabled(true);
+        holder.content.getSettings().setDefaultFontSize(14);
+        //holder.content.setBackgroundColor(Color.argb(80,128,0,128));
+        holder.content.setBackgroundColor(Color.TRANSPARENT);
         holder.content.loadDataWithBaseURL("", html, mimeType, encoding, "");
         holder.url.setClickable(true);
 

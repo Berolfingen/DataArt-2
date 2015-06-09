@@ -3,10 +3,12 @@ package com.leo.myapplication14.app;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -28,20 +30,24 @@ public class MainActivity extends ActionBarActivity {
     ListView list;
     ApexAdapter adapter;
     ArrayList<Apex> apexArrayList;
+    public static int screenHeight;
+    public static int screenWidth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        screenHeight=metrics.heightPixels;
+        screenWidth=metrics.widthPixels;
         list =(ListView)findViewById(R.id.list);
         apexArrayList = new ArrayList<>();
         new ApexAsynTask().execute();
-
     }
 
+
+
     private class ApexAsynTask extends AsyncTask<Void, Void, String> {
-
-
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -93,6 +99,9 @@ public class MainActivity extends ActionBarActivity {
             ApexAdapter adapter = new ApexAdapter(context,R.layout.row,apexArrayList);
             list.setAdapter(adapter);
         }
+
+
+
     }
 
 
