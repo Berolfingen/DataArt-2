@@ -32,8 +32,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent myIntent = new Intent(this,Miniature.class);
-        startActivity(myIntent);
 
         list =(ListView)findViewById(R.id.list);
         apexArrayList = new ArrayList<>();

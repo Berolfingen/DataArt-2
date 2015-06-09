@@ -3,33 +3,37 @@ package com.leo.myapplication14.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class Miniature extends Activity {
-    ImageView minuature;
+    TextView text;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.miniature);
-        minuature = (ImageView)findViewById(R.id.minuature);
-        final int welcomeScreenDisplay = 4000;
-        Thread welcomeThread = new Thread() {
-            int wait = 0;
-            @Override
-            public void run() {
-                try {
-                    super.run();
-                    while (wait < welcomeScreenDisplay) {
-                        sleep(100);
-                        wait += 100;
-                    }
-                } catch (Exception e) {
-                    System.out.println("EXc=" + e);
-                } finally {
-                    startActivity(new Intent(Miniature.this, MainActivity.class));
-                    finish();
+        text = (TextView)findViewById(R.id.loading);
+        Thread timerThread = new Thread(){
+            public void run(){
+                try{
+                    sleep(5000);
+                }catch(InterruptedException e){
+                    e.printStackTrace();
+                }finally{
+                    Intent i = new Intent("com.leo.myapplication14.app.MainActivity");
+                    startActivity(i);
                 }
             }
         };
-        welcomeThread.start();
+        timerThread.start();    }
+
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        finish();
     }
+
 }

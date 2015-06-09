@@ -15,9 +15,8 @@
             android:name="com.leo.myapplication14.app.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.leo.myapplication14.app.MainActivity"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -34,8 +33,8 @@
                 android:name="com.leo.myapplication14.app.Miniature"
                 android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
