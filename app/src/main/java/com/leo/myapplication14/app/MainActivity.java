@@ -2,17 +2,12 @@ package com.leo.myapplication14.app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.LinearLayout;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,19 +24,17 @@ public class MainActivity extends ActionBarActivity {
     Context context = this;
     ListView list;
     ApexAdapter adapter;
-    ArrayList<Apex> apexArrayList;
-    public static int screenHeight;
-    public static int screenWidth;
+    ArrayList<Apex> apexArrayListFeatured;
+    ArrayList<Apex> apexArrayListArchive;
+    TextView archive;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        screenHeight=metrics.heightPixels;
-        screenWidth=metrics.widthPixels;
+        archive=(TextView)findViewById(R.id.archive);
         list =(ListView)findViewById(R.id.list);
-        apexArrayList = new ArrayList<>();
+        apexArrayListFeatured = new ArrayList<>();
+        apexArrayListArchive= new ArrayList<>();
         new ApexAsynTask().execute();
     }
 
@@ -91,20 +84,27 @@ public class MainActivity extends ActionBarActivity {
                     apex.setContent(jRealObject.getString("content"));
                     apex.setUrl(jRealObject.getString("url"));
                     apex.setCreated_at(jRealObject.getString("created_at"));
-                    apexArrayList.add(apex);
+                    if(jRealObject.getString("featured").equals("true"))apexArrayListFeatured.add(apex);
+                    else apexArrayListArchive.add(apex);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            ApexAdapter adapter = new ApexAdapter(context,R.layout.row,apexArrayList);
+            ApexAdapter adapter = new ApexAdapter(context,R.layout.row, apexArrayListFeatured);
             list.setAdapter(adapter);
+            archive.setClickable(true);
+            archive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent();
+                    myIntent.setClass(MainActivity.this,Archive.class);
+                    Bundle bundleObject = new Bundle();
+                    bundleObject.putSerializable("archivelist",apexArrayListArchive);
+                    myIntent.putExtras(bundleObject);
+                   startActivity(myIntent);
+                }
+            });
         }
-
-
-
     }
-
-
-
 }

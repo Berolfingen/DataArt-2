@@ -48,7 +48,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         }
 
         Picasso.with(context).load(ArrayListApex.get(position).getPhoto())
-                .resize(MainActivity.screenWidth,MainActivity.screenHeight/2)
+                .resize(Splashscreen.screenWidth,Splashscreen.screenHeight/2)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .into(holder.photo);

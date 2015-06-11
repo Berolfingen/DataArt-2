@@ -1,15 +1,17 @@
 package com.leo.myapplication14.app;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Apex {
+public class Apex implements Serializable {
     String title;
     String photo;
     String content;
     String url;
     String created_at;
+
     public Apex() {
     }
 
@@ -43,14 +45,6 @@ public class Apex {
         return  result.toString();
     }
 
-    private boolean isCyrillic(char c) {
-        return Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(c));
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public String getUrl() {
         return url;
     }
@@ -68,4 +62,14 @@ public class Apex {
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
+
+    private boolean isCyrillic(char c) {
+        return Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(c));
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+
 }
