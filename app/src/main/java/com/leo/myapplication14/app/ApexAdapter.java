@@ -3,9 +3,7 @@ package com.leo.myapplication14.app;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.view.*;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -56,7 +54,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         holder.date.setText("Дата размещения "+ArrayListApex.get(position).getCreated_at());
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
-        String html=ArrayListApex.get(position).getContent();
+        String html=ArrayListApex.get(position).getShortContent();
         holder.content.getSettings().setJavaScriptEnabled(true);
         holder.content.getSettings().setDefaultFontSize(14);
         //holder.content.setBackgroundColor(Color.argb(80,128,0,128));
@@ -68,7 +66,11 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(v.getContext(),News.class);
-                myIntent.putExtra("url",ArrayListApex.get(position).getUrl());
+               /* myIntent.putExtra("url",ArrayListApex.get(position).getUrl());*/
+                myIntent.putExtra("title",ArrayListApex.get(position).getTitle());
+                myIntent.putExtra("photo",ArrayListApex.get(position).getPhoto());
+                myIntent.putExtra("content",ArrayListApex.get(position).getContent());
+                myIntent.putExtra("created_at",ArrayListApex.get(position).getCreated_at());
                 v.getContext().startActivity(myIntent);
             }
         };

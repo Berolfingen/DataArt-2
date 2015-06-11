@@ -31,7 +31,11 @@ public class Apex implements Serializable {
         this.photo = photo;
     }
 
-    public String getContent() {
+    public String getContent(){
+        return "<html>"+content+"</html>";
+    }
+
+    public String getShortContent() {
         StringBuilder result = new StringBuilder("");
         result.append("<html><body><style>body{font-weight: bold;}</style>");
         int count=0;

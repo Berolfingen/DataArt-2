@@ -86,6 +86,7 @@ public class MainActivity extends ActionBarActivity {
                     apex.setCreated_at(jRealObject.getString("created_at"));
                     if(jRealObject.getString("featured").equals("true"))apexArrayListFeatured.add(apex);
                     else apexArrayListArchive.add(apex);
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -103,6 +104,7 @@ public class MainActivity extends ActionBarActivity {
                     bundleObject.putSerializable("archivelist",apexArrayListArchive);
                     myIntent.putExtras(bundleObject);
                    startActivity(myIntent);
+
                 }
             });
         }
