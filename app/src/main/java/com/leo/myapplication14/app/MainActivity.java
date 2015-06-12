@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +23,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -31,10 +34,14 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<Apex> apexArrayListFeatured;
     ArrayList<Apex> apexArrayListArchive;
     TextView archive;
+    ApexSqlliteHelper db;
+    URL urlForBitmap;
+    Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        db=new ApexSqlliteHelper(this);
         archive=(TextView)findViewById(R.id.archive);
         list =(ListView)findViewById(R.id.list);
         apexArrayListFeatured = new ArrayList<>();
@@ -86,14 +93,16 @@ public class MainActivity extends ActionBarActivity {
                     apex.setTitle(jRealObject.getString("title"));
                     apex.setPhoto(jRealObject.getString("photo"));
                     apex.setContent(jRealObject.getString("content"));
-                    URL url = new URL(apex.getPhoto());
-                    Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    apex.setImage(image);
+                    urlForBitmap = new URL(jRealObject.getString("photo"));
+
+                    bitmap=new BitMapWorker().execute(urlForBitmap).get();
+                    apex.setImage(bitmap);
+                    apex.setFeatured(jRealObject.getString("featured"));
                     apex.setUrl(jRealObject.getString("url"));
                     apex.setCreated_at(jRealObject.getString("created_at"));
                     if(jRealObject.getString("featured").equals("true"))apexArrayListFeatured.add(apex);
                     else apexArrayListArchive.add(apex);
-
+                    db.addApex(apex);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -101,8 +110,12 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
-
+            List<Apex> listDB = db.getAllApex();
             ApexAdapter adapter = new ApexAdapter(context,R.layout.row, apexArrayListFeatured);
             list.setAdapter(adapter);
             archive.setClickable(true);
@@ -118,6 +131,30 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             });
+        }
+    }
+
+    class BitMapWorker extends AsyncTask<URL, Void, Bitmap>{
+        Bitmap image;
+        @Override
+        protected Bitmap doInBackground(URL... params) {
+            try {
+                URL url = new URL(params[0].toString());
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                image = BitmapFactory.decodeStream(input);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return image;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
         }
     }
 }

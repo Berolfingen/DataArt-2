@@ -8,15 +8,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Apex implements Serializable {
+    int id;
     String title;
     String photo;
     String content;
+    String shortContent;
     String url;
     String created_at;
     String featured;
     Bitmap image;
 
     public Apex() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -51,6 +61,10 @@ public class Apex implements Serializable {
         result.append("...");
         result.append("</p></body></html>");
         return  result.toString();
+    }
+
+    public void setShortContent(String shortContent) {
+        this.shortContent = shortContent;
     }
 
     public String getUrl() {
