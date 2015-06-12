@@ -1,5 +1,7 @@
 package com.leo.myapplication14.app;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,6 +13,8 @@ public class Apex implements Serializable {
     String content;
     String url;
     String created_at;
+    String featured;
+    Bitmap image;
 
     public Apex() {
     }
@@ -75,5 +79,19 @@ public class Apex implements Serializable {
         this.content = content;
     }
 
+    public String getFeatured() {
+        return featured;
+    }
 
+    public void setFeatured(String featured) {
+        this.featured = featured;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 }

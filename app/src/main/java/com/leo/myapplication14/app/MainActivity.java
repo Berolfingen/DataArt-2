@@ -2,6 +2,8 @@ package com.leo.myapplication14.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -13,9 +15,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -82,6 +86,9 @@ public class MainActivity extends ActionBarActivity {
                     apex.setTitle(jRealObject.getString("title"));
                     apex.setPhoto(jRealObject.getString("photo"));
                     apex.setContent(jRealObject.getString("content"));
+                    URL url = new URL(apex.getPhoto());
+                    Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    apex.setImage(image);
                     apex.setUrl(jRealObject.getString("url"));
                     apex.setCreated_at(jRealObject.getString("created_at"));
                     if(jRealObject.getString("featured").equals("true"))apexArrayListFeatured.add(apex);
@@ -89,6 +96,10 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
