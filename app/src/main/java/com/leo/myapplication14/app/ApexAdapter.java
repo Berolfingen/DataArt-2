@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ApexAdapter extends ArrayAdapter<Apex> {
@@ -17,12 +18,14 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
     int Resource;
     Context context;
     LayoutInflater vi;
+    Boolean b;
 
-    public ApexAdapter(Context context, int resource, ArrayList<Apex> objects) {
+    public ApexAdapter(Context context, int resource, ArrayList<Apex> objects, Boolean b) {
         super(context, resource, objects);
         ArrayListApex=objects;
         Resource=resource;
         this.context=context;
+        this.b=b;
         vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -44,12 +47,13 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-        Picasso.with(context).load(ArrayListApex.get(position).getPhoto())
+        if(b==true){Picasso.with(context).load(new File(ArrayListApex.get(position).getImagePath())).resize(Splashscreen.screenWidth,Splashscreen.screenHeight/2)
+                .placeholder(R.drawable.icon).error(R.drawable.placeholder).into(holder.photo);}
+        else {Picasso.with(context).load(ArrayListApex.get(position).getPhoto())
                 .resize(Splashscreen.screenWidth,Splashscreen.screenHeight/2)
-                .placeholder(R.drawable.placeholder)
+                .placeholder(R.drawable.icon)
                 .error(R.drawable.placeholder)
-                .into(holder.photo);
+                .into(holder.photo);}
         holder.title.setText(ArrayListApex.get(position).getTitle());
         holder.date.setText("Дата размещения "+ArrayListApex.get(position).getCreated_at());
         final String mimeType = "text/html";
@@ -68,7 +72,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
                 Intent myIntent = new Intent(v.getContext(),News.class);
                /* myIntent.putExtra("url",ArrayListApex.get(position).getUrl());*/
                 myIntent.putExtra("title",ArrayListApex.get(position).getTitle());
-                myIntent.putExtra("photo",ArrayListApex.get(position).getPhoto());
+                myIntent.putExtra("photo",ArrayListApex.get(position).getImagePath());
                 myIntent.putExtra("content",ArrayListApex.get(position).getContent());
                 myIntent.putExtra("created_at",ArrayListApex.get(position).getCreated_at());
                 v.getContext().startActivity(myIntent);
@@ -89,5 +93,6 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         public TextView date;
     }
 }
+
 
 

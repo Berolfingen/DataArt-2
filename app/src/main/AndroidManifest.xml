@@ -1,33 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.leo.myapplication14.app" >
+          package="com.leo.myapplication14.app" >
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+            android:configChanges="orientation"
+            android:icon="@drawable/icon"
+            android:allowBackup="true"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" >
         <activity
-            android:name="com.leo.myapplication14.app.MainActivity"
-            android:label="@string/app_name" >
+                android:name="com.leo.myapplication14.app.MainActivity"
+                android:configChanges="orientation|screenSize"
+                android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="com.leo.myapplication14.app.MainActivity"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-    <activity
-            android:name="com.leo.myapplication14.app.News"
-            android:label="@string/app_name" >
-        <intent-filter>
-            <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
-    </activity>
+        <activity
+                android:name="com.leo.myapplication14.app.News"
+                android:configChanges="orientation|screenSize"
+                android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <activity
                 android:name="com.leo.myapplication14.app.Archive"
+                android:configChanges="orientation|screenSize"
                 android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
@@ -37,7 +43,8 @@
 
 
         <activity
-                android:name=".Splashscreen"
+                android:name="com.leo.myapplication14.app.Splashscreen"
+                android:configChanges="orientation|screenSize"
                 android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -15,6 +15,7 @@ public class Archive extends Activity {
     Context context = this;
     ListView list1;
     TextView main;
+    ApexSqlliteHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +23,11 @@ public class Archive extends Activity {
         setContentView(R.layout.archive);
         list1 = (ListView) findViewById(R.id.list1);
         main = (TextView) findViewById(R.id.main);
-        Bundle bundleObject = getIntent().getExtras();
-        ArrayList<Apex> archive = (ArrayList<Apex>) bundleObject.getSerializable("archivelist");
-        ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive);
+        db=new ApexSqlliteHelper(this);
+        ArrayList<Apex> archive = db.getNotFetchedNews();
+        /*Bundle bundleObject = getIntent().getExtras();
+        ArrayList<Apex> archive = (ArrayList<Apex>) bundleObject.getSerializable("archivelist");*/
+        ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive,true);
         list1.setAdapter(adapter);
         main.setClickable(true);
         main.setOnClickListener(new View.OnClickListener() {

@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
+import java.io.File;
+
 public class News extends Activity {
     TextView newsTitle;
     ImageView newsPhoto;
@@ -26,7 +28,7 @@ public class News extends Activity {
         newsDate=(TextView)findViewById(R.id.datedetails);
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
-        String photo = intent.getStringExtra("photo");
+        String imagePath = intent.getStringExtra("photo");
         String content = intent.getStringExtra("content");
         String created = intent.getStringExtra("created_at");
         newsTitle.setText(title);
@@ -37,9 +39,9 @@ public class News extends Activity {
         newsContent.getSettings().setJavaScriptEnabled(true);
         newsContent.setBackgroundColor(Color.TRANSPARENT);
         newsContent.loadDataWithBaseURL("", html, mimeType, encoding, "");
-        Picasso.with(this).load(photo)
+        Picasso.with(this).load(new File(imagePath))
                 .resize(Splashscreen.screenWidth,Splashscreen.screenHeight/2)
-                .placeholder(R.drawable.placeholder)
+                .placeholder(R.drawable.icon)
                 .error(R.drawable.placeholder)
                 .into(newsPhoto);
 

@@ -1,14 +1,17 @@
 package com.leo.myapplication14.app;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Apex implements Serializable {
+public class Apex implements Parcelable {
     int id;
+    String idNews;
     String title;
     String photo;
     String content;
@@ -16,7 +19,7 @@ public class Apex implements Serializable {
     String url;
     String created_at;
     String featured;
-    Bitmap image;
+    String imagePath;
 
     public Apex() {
     }
@@ -27,6 +30,14 @@ public class Apex implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIdNews() {
+        return idNews;
+    }
+
+    public void setIdNews(String idNews) {
+        this.idNews = idNews;
     }
 
     public String getTitle() {
@@ -54,9 +65,9 @@ public class Apex implements Serializable {
         result.append("<html><body><style>body{font-weight: bold;}</style>");
         int count=0;
         for(int i=0;i<content.length();i++){
-           result.append(content.substring(i,i+1));
-           if(isCyrillic(content.charAt(i))) count++;
-           if(count==50) break;
+            result.append(content.substring(i,i+1));
+            if(isCyrillic(content.charAt(i))) count++;
+            if(count==50) break;
         }
         result.append("...");
         result.append("</p></body></html>");
@@ -101,11 +112,39 @@ public class Apex implements Serializable {
         this.featured = featured;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    @Override
+    public String toString() {
+        return "Apex{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(idNews);
+        dest.writeString(title);
+        dest.writeString(photo);
+        dest.writeString(content);
+        dest.writeString(shortContent);
+        dest.writeString(url);
+        dest.writeString(created_at);
+        dest.writeString(featured);
+        dest.writeString(imagePath);
     }
 }

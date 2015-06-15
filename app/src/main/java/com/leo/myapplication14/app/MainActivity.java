@@ -1,12 +1,17 @@
 package com.leo.myapplication14.app;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -15,10 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,27 +37,74 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<Apex> apexArrayListArchive;
     TextView archive;
     ApexSqlliteHelper db;
-    URL urlForBitmap;
-    Bitmap bitmap;
+    private ProgressDialog pdia;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db=new ApexSqlliteHelper(this);
         archive=(TextView)findViewById(R.id.archive);
+        archive.setClickable(true);
+        archive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent();
+                myIntent.setClass(MainActivity.this,Archive.class);
+                   /* Bundle bundleObject = new Bundle();
+                    bundleObject.putSerializable("archivelist",apexArrayListArchive);
+                    myIntent.putExtras(bundleObject);*/
+                startActivity(myIntent);
+
+            }
+        });
         list =(ListView)findViewById(R.id.list);
         apexArrayListFeatured = new ArrayList<>();
         apexArrayListArchive= new ArrayList<>();
-        new ApexAsynTask().execute();
+        if(isNetworkAvailable(context)) {
+            new ApexAsynTask().execute();
+        }
+        else {
+            db=new ApexSqlliteHelper(this);
+            ArrayList<Apex> archive = db.getFetchedNews();
+            ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive,true);
+            list.setAdapter(adapter);
+
+        }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("apexFeatured",apexArrayListFeatured);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
     private class ApexAsynTask extends AsyncTask<Void, Void, String> {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultJson = "";
+
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pdia = new ProgressDialog(context);
+            pdia.setCanceledOnTouchOutside(false);
+            pdia.setMessage("Loading...");
+            pdia.show();
+        }
 
         @Override
         protected String doInBackground(Void... params) {
@@ -90,66 +139,69 @@ public class MainActivity extends ActionBarActivity {
                 for (int i = 0; i <jArray.length() ; i++) {
                     Apex apex = new Apex();
                     JSONObject jRealObject = jArray.getJSONObject(i);
+                    apex.setIdNews(jRealObject.getString("id"));
                     apex.setTitle(jRealObject.getString("title"));
                     apex.setPhoto(jRealObject.getString("photo"));
                     apex.setContent(jRealObject.getString("content"));
-                    urlForBitmap = new URL(jRealObject.getString("photo"));
-
-                    bitmap=new BitMapWorker().execute(urlForBitmap).get();
-                    apex.setImage(bitmap);
+                    apex.setImagePath(saveToInternalSorage(new BackTask().execute(jRealObject.getString("photo")).get(),"image"+jRealObject.getString("title")));
+                    //apex.setImagePath("data/data/jsonparsetutorial.wingnity.com.myapplication/app_data/imageDir/"+jRealObject.getString("title")+".jpg");
                     apex.setFeatured(jRealObject.getString("featured"));
                     apex.setUrl(jRealObject.getString("url"));
                     apex.setCreated_at(jRealObject.getString("created_at"));
+                    db.addApex(apex);
                     if(jRealObject.getString("featured").equals("true"))apexArrayListFeatured.add(apex);
                     else apexArrayListArchive.add(apex);
-                    db.addApex(apex);
+
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-            List<Apex> listDB = db.getAllApex();
-            ApexAdapter adapter = new ApexAdapter(context,R.layout.row, apexArrayListFeatured);
+            pdia.dismiss();
+            ApexAdapter adapter = new ApexAdapter(context,R.layout.row, apexArrayListFeatured,false);
             list.setAdapter(adapter);
-            archive.setClickable(true);
-            archive.setOnClickListener(new View.OnClickListener() {
+            // archive.setClickable(true);
+           /* archive.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent myIntent = new Intent();
                     myIntent.setClass(MainActivity.this,Archive.class);
-                    Bundle bundleObject = new Bundle();
+                   *//* Bundle bundleObject = new Bundle();
                     bundleObject.putSerializable("archivelist",apexArrayListArchive);
-                    myIntent.putExtras(bundleObject);
-                   startActivity(myIntent);
+                    myIntent.putExtras(bundleObject);*//*
+                    startActivity(myIntent);
 
                 }
-            });
+            });*/
         }
     }
 
-    class BitMapWorker extends AsyncTask<URL, Void, Bitmap>{
-        Bitmap image;
-        @Override
-        protected Bitmap doInBackground(URL... params) {
+    private class BackTask extends AsyncTask<String,Void,Bitmap>{
+
+
+        protected Bitmap doInBackground(String...params){
+            Bitmap bitmap=null;
             try {
-                URL url = new URL(params[0].toString());
+                // Download the image
+                URL url = new URL(params[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setDoInput(true);
                 connection.connect();
-                InputStream input = connection.getInputStream();
-                image = BitmapFactory.decodeStream(input);
-
-            } catch (IOException e) {
-                e.printStackTrace();
+                InputStream is = connection.getInputStream();
+                // Decode image to get smaller image to save memory
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = false;
+                options.inSampleSize=4;
+                bitmap = BitmapFactory.decodeStream(is,null, options);
+                is.close();
             }
-            return image;
+            catch(IOException e){
+                Log.d("IO ",e.toString());
+            }
+            return bitmap;
         }
 
         @Override
@@ -157,4 +209,32 @@ public class MainActivity extends ActionBarActivity {
             super.onPostExecute(bitmap);
         }
     }
+    private String saveToInternalSorage(Bitmap bitmapImage, String id){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,id+".jpg");
+
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mypath.getAbsolutePath();
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+    }
+
+
+
 }
