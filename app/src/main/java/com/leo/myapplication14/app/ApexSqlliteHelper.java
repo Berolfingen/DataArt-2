@@ -6,11 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ApexSqlliteHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 29;
+    private static final int DATABASE_VERSION = 30;
     private static final String DATABASE_NAME = "ApexDB";
 
     public ApexSqlliteHelper(Context context) {
@@ -19,7 +20,7 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_APEX_TABLE = "CREATE TABLE apexNews(_id INTEGER PRIMARY KEY, idNews TEXT unique, title TEXT, content TEXT, shortContent Text, featured TEXT, created_at TEXT, photopath TEXT);";
+        String CREATE_APEX_TABLE = "CREATE TABLE apexNews(_id INTEGER PRIMARY KEY, idNews TEXT unique, title TEXT, content TEXT, shortContent Text, featured TEXT, created_at TEXT, photopath TEXT, url TEXT);";
 
 
         db.execSQL(CREATE_APEX_TABLE);
@@ -35,15 +36,16 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
     private static final String TABLE_ApexNews = "apexNews";
     // Books Table Columns names
     private static final String KEY_ID = "id";
-    private static final String KEY_ID_NEWS="idNews";
+    private static final String KEY_ID_NEWS = "idNews";
     private static final String KEY_TITLE = "title";
     private static final String KEY_CONTENT = "content";
     private static final String KEY_SHORT_CONTENT = "shortContent";
     private static final String KEY_FEATURED = "featured";
     private static final String KEY_CREATED_AT = "created_at";
     private static final String KEY_PHOTOPATH = "photopath";
+    private static final String KEY_URL = "url";
 
-    private static final String[] COLUMNS = {KEY_ID, KEY_ID_NEWS, KEY_TITLE, KEY_CONTENT, KEY_SHORT_CONTENT, KEY_FEATURED, KEY_CREATED_AT, KEY_PHOTOPATH};
+    private static final String[] COLUMNS = {KEY_ID, KEY_ID_NEWS, KEY_TITLE, KEY_CONTENT, KEY_SHORT_CONTENT, KEY_FEATURED, KEY_CREATED_AT, KEY_PHOTOPATH, KEY_URL};
 
     public void addApex(Apex apex) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -51,12 +53,13 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_TITLE, apex.getTitle());
-        values.put(KEY_ID_NEWS,apex.getIdNews());
+        values.put(KEY_ID_NEWS, apex.getIdNews());
         values.put(KEY_CONTENT, apex.getContent());
         values.put(KEY_SHORT_CONTENT, apex.getShortContent());
         values.put(KEY_FEATURED, apex.getFeatured());
         values.put(KEY_CREATED_AT, apex.getCreated_at());
         values.put(KEY_PHOTOPATH, apex.getImagePath());
+        values.put(KEY_URL, apex.getUrl());
 
         db.insert(TABLE_ApexNews, // table
                 null, //nullColumnHack
@@ -64,7 +67,6 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
 
         db.close();
     }
-
 
 
     public Apex getApex(int id) {
@@ -95,6 +97,9 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
         apex.setFeatured(cursor.getString(5));
         apex.setCreated_at(cursor.getString(6));
         apex.setImagePath(cursor.getString(7));
+        apex.setUrl(cursor.getString(8));
+        cursor.close();
+        db.close();
         return apex;
 
     }
@@ -105,13 +110,14 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
 
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put(KEY_ID_NEWS,apex.getIdNews());
+        values.put(KEY_ID_NEWS, apex.getIdNews());
         values.put(KEY_TITLE, apex.getTitle()); // get title
         values.put(KEY_CONTENT, apex.getContent());
         values.put(KEY_SHORT_CONTENT, apex.getShortContent());
         values.put(KEY_FEATURED, apex.getFeatured());
         values.put(KEY_CREATED_AT, apex.getCreated_at());
-        values.put(KEY_PHOTOPATH,apex.getImagePath());
+        values.put(KEY_PHOTOPATH, apex.getImagePath());
+        values.put(KEY_URL, apex.getUrl());
         // 3. updating row
         int i = db.update(TABLE_ApexNews, //table
                 values, // column/value
@@ -138,14 +144,11 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
     public List<Apex> getAllApex() {
         List<Apex> apexes = new ArrayList<Apex>();
 
-        // 1. build the query
         String query = "SELECT  * FROM " + TABLE_ApexNews;
-
-        // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        // 3. go over each row, build book and add it to list
+        // 3. go over each row, build apex and add it to list
         Apex apex = null;
         if (cursor.moveToFirst()) {
             do {
@@ -158,25 +161,42 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
                 apex.setFeatured(cursor.getString(5));
                 apex.setCreated_at(cursor.getString(6));
                 apex.setImagePath(cursor.getString(7));
+                apex.setUrl(cursor.getString(8));
 
-                // Add book to books
                 apexes.add(apex);
                 Log.d("getAllApex()", apex.toString());
             } while (cursor.moveToNext());
         }
-
-
-        // return books
+        cursor.close();
+        db.close();
         return apexes;
     }
 
+    public ArrayList<String> getAllNewsId() {
+        ArrayList<String> newsId = new ArrayList<>();
+        String query = "SELECT idNews FROM " + TABLE_ApexNews;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        String str = "";
+        if (cursor.moveToFirst()) {
+            do {
+                str = (cursor.getString(0));
+                newsId.add(str);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return newsId;
+
+    }
 
 
     public ArrayList<Apex> getNotFetchedNews() {
         ArrayList<Apex> apexes = new ArrayList<Apex>();
 
         // 1. build the query
-        String query = "SELECT  * FROM " + TABLE_ApexNews+" WHERE featured = 'false';";
+        String query = "SELECT  * FROM " + TABLE_ApexNews + " WHERE featured = 'false';";
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
@@ -195,15 +215,16 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
                 apex.setFeatured(cursor.getString(5));
                 apex.setCreated_at(cursor.getString(6));
                 apex.setImagePath(cursor.getString(7));
+                apex.setUrl(cursor.getString(8));
 
                 // Add book to books
                 apexes.add(apex);
                 Log.d("getAllApex()", apex.toString());
             } while (cursor.moveToNext());
         }
+         cursor.close();
+         db.close();
 
-
-        // return books
         return apexes;
     }
 
@@ -211,7 +232,7 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
         ArrayList<Apex> apexes = new ArrayList<Apex>();
 
         // 1. build the query
-        String query = "SELECT  * FROM " + TABLE_ApexNews+" WHERE featured = 'true';";
+        String query = "SELECT  * FROM " + TABLE_ApexNews + " WHERE featured = 'true';";
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
@@ -230,6 +251,7 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
                 apex.setFeatured(cursor.getString(5));
                 apex.setCreated_at(cursor.getString(6));
                 apex.setImagePath(cursor.getString(7));
+                apex.setUrl(cursor.getString(8));
 
                 // Add book to books
                 apexes.add(apex);
@@ -237,21 +259,21 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-
-        // return books
+        cursor.close();
+        db.close();
         return apexes;
     }
 
-    public void checkOnUpdates(ArrayList<Apex> list) {
+    public void checkOnUpdates(ArrayList<String> list) {
         SQLiteDatabase db = this.getWritableDatabase();
         StringBuilder inQuery = new StringBuilder();
-        ArrayList<String> item= new ArrayList<>();
-        for (int i = 0; i <list.size() ; i++) {
+        //ArrayList<String> item = new ArrayList<>();
+        /*for (int i = 0; i < list.size(); i++) {
             item.add(list.get(i).getIdNews());
-        }
+        }*/
         inQuery.append("(");
         boolean first = true;
-        for (String IdNews : item) {
+        for (String IdNews : list) {
             if (first) {
                 first = false;
                 inQuery.append("'").append(IdNews).append("'");
@@ -262,6 +284,8 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
         inQuery.append(")");
 
         db.delete(TABLE_ApexNews, KEY_ID_NEWS + " NOT IN " + inQuery.toString(), null);
+
+        db.close();
     }
 }
 

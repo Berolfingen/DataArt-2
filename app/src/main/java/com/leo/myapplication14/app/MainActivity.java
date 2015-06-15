@@ -15,9 +15,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,11 +28,14 @@ import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends ActionBarActivity {
+    private static final int QUANTITY_OF_NEWS =50;
     Context context = this;
     ListView list;
     ApexAdapter adapter;
     ArrayList<Apex> apexArrayListFeatured;
     ArrayList<Apex> apexArrayListArchive;
+    ArrayList<String> newsIdInDB;
+    ArrayList<String> fullIdJson;
     TextView archive;
     ApexSqlliteHelper db;
     private ProgressDialog pdia;
@@ -39,14 +44,14 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        db=new ApexSqlliteHelper(this);
-        archive=(TextView)findViewById(R.id.archive);
+        db = new ApexSqlliteHelper(this);
+        archive = (TextView) findViewById(R.id.archive);
         archive.setClickable(true);
         archive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent();
-                myIntent.setClass(MainActivity.this,Archive.class);
+                myIntent.setClass(MainActivity.this, Archive.class);
                    /* Bundle bundleObject = new Bundle();
                     bundleObject.putSerializable("archivelist",apexArrayListArchive);
                     myIntent.putExtras(bundleObject);*/
@@ -54,16 +59,21 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
-        list =(ListView)findViewById(R.id.list);
+        list = (ListView) findViewById(R.id.list);
         apexArrayListFeatured = new ArrayList<>();
-        apexArrayListArchive= new ArrayList<>();
-        if(isNetworkAvailable(context)) {
+        apexArrayListArchive = new ArrayList<>();
+        newsIdInDB = new ArrayList<>();
+        fullIdJson = new ArrayList<>();
+        if (isNetworkAvailable(context)) {
+            db = new ApexSqlliteHelper(this);
+            newsIdInDB=db.getAllNewsId();
             new ApexAsynTask().execute();
-        }
-        else {
-            db=new ApexSqlliteHelper(this);
+        } else {
+            Toast.makeText(getApplicationContext(), "Internet connection is not available. App is loading data from the database",
+                    Toast.LENGTH_SHORT).show();
+            db = new ApexSqlliteHelper(this);
             ArrayList<Apex> archive = db.getFetchedNews();
-            ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive,true);
+            ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive, true);
             list.setAdapter(adapter);
 
         }
@@ -72,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("apexFeatured",apexArrayListFeatured);
+        outState.putParcelableArrayList("apexFeatured", apexArrayListFeatured);
     }
 
     @Override
@@ -94,7 +104,7 @@ public class MainActivity extends ActionBarActivity {
         String resultJson = "";
 
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             super.onPreExecute();
             pdia = new ProgressDialog(context);
             pdia.setCanceledOnTouchOutside(false);
@@ -132,21 +142,31 @@ public class MainActivity extends ActionBarActivity {
             try {
                 jArray = new JSONArray(strJson);
 
-                for (int i = 0; i <jArray.length() ; i++) {
+                for (int i = 0; i < QUANTITY_OF_NEWS; i++) {
                     Apex apex = new Apex();
                     JSONObject jRealObject = jArray.getJSONObject(i);
-                    apex.setIdNews(jRealObject.getString("id"));
-                    apex.setTitle(jRealObject.getString("title"));
-                    apex.setPhoto(jRealObject.getString("photo"));
-                    apex.setContent(jRealObject.getString("content"));
-                    apex.setImagePath(saveToInternalSorage(new BackTask().execute(jRealObject.getString("photo")).get(),"image"+jRealObject.getString("title")));
-                    //apex.setImagePath("data/data/jsonparsetutorial.wingnity.com.myapplication/app_data/imageDir/"+jRealObject.getString("title")+".jpg");
-                    apex.setFeatured(jRealObject.getString("featured"));
-                    apex.setUrl(jRealObject.getString("url"));
-                    apex.setCreated_at(jRealObject.getString("created_at"));
-                    db.addApex(apex);
-                    if(jRealObject.getString("featured").equals("true"))apexArrayListFeatured.add(apex);
-                    else apexArrayListArchive.add(apex);
+                    String id= jRealObject.getString("id");
+                    fullIdJson.add(id);
+                    if(newsIdInDB.contains(id)){
+                        continue;
+                    }
+                    else {
+                        apex.setIdNews(id);
+                        apex.setTitle(jRealObject.getString("title"));
+                        apex.setPhoto(jRealObject.getString("photo"));
+                        apex.setContent(jRealObject.getString("content"));
+                        apex.setImagePath(saveToInternalSorage(new BackTask().execute(jRealObject.getString("photo")).get(), "image" + jRealObject.getString("title")));
+                        apex.setUrl(jRealObject.getString("url"));
+                        apex.setFeatured(jRealObject.getString("featured"));
+                        apex.setUrl(jRealObject.getString("url"));
+                        apex.setCreated_at(jRealObject.getString("created_at"));
+
+                        db.addApex(apex);
+
+                       /* if (jRealObject.getString("featured").equals("true")) apexArrayListFeatured.add(apex);
+                        else apexArrayListArchive.add(apex);*/
+                    }
+
 
                 }
             } catch (JSONException e) {
@@ -156,30 +176,21 @@ public class MainActivity extends ActionBarActivity {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
+            db.checkOnUpdates(fullIdJson);
             pdia.dismiss();
-            ApexAdapter adapter = new ApexAdapter(context,R.layout.row, apexArrayListFeatured,false);
+            db = new ApexSqlliteHelper(context);
+            ArrayList<Apex> archive = db.getFetchedNews();
+            ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive, true);
             list.setAdapter(adapter);
-            // archive.setClickable(true);
-           /* archive.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent myIntent = new Intent();
-                    myIntent.setClass(MainActivity.this,Archive.class);
-                   *//* Bundle bundleObject = new Bundle();
-                    bundleObject.putSerializable("archivelist",apexArrayListArchive);
-                    myIntent.putExtras(bundleObject);*//*
-                    startActivity(myIntent);
 
-                }
-            });*/
         }
     }
 
-    private class BackTask extends AsyncTask<String,Void,Bitmap>{
+    private class BackTask extends AsyncTask<String, Void, Bitmap> {
 
 
-        protected Bitmap doInBackground(String...params){
-            Bitmap bitmap=null;
+        protected Bitmap doInBackground(String... params) {
+            Bitmap bitmap = null;
             try {
                 // Download the image
                 URL url = new URL(params[0]);
@@ -190,12 +201,11 @@ public class MainActivity extends ActionBarActivity {
                 // Decode image to get smaller image to save memory
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = false;
-                options.inSampleSize=4;
-                bitmap = BitmapFactory.decodeStream(is,null, options);
+                options.inSampleSize = 4;
+                bitmap = BitmapFactory.decodeStream(is, null, options);
                 is.close();
-            }
-            catch(IOException e){
-                Log.d("IO ",e.toString());
+            } catch (IOException e) {
+                Log.d("IO ", e.toString());
             }
             return bitmap;
         }
@@ -205,12 +215,13 @@ public class MainActivity extends ActionBarActivity {
             super.onPostExecute(bitmap);
         }
     }
-    private String saveToInternalSorage(Bitmap bitmapImage, String id){
+
+    private String saveToInternalSorage(Bitmap bitmapImage, String id) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         // Create imageDir
-        File mypath=new File(directory,id+".jpg");
+        File mypath = new File(directory, id + ".jpg");
 
         FileOutputStream fos = null;
         try {
@@ -230,7 +241,6 @@ public class MainActivity extends ActionBarActivity {
     public static boolean isNetworkAvailable(Context context) {
         return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
     }
-
 
 
 }

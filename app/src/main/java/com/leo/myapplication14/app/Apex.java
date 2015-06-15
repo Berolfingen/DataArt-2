@@ -97,13 +97,13 @@ public class Apex implements Parcelable {
         DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, russian);
         SimpleDateFormat sdf = (SimpleDateFormat) df;
         sdf.setDateFormatSymbols(dfs);
-        String result = "";
+
         try {
             Date jud = new SimpleDateFormat("yyyy-MM-dd").parse(data);
-            result = sdf.format(jud);
+            created_at = sdf.format(jud);
         } catch (ParseException e) {
         }
-        return result;
+        return created_at;
     }
 
     public void setCreated_at(String created_at) {

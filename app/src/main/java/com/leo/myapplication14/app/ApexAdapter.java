@@ -75,6 +75,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
                 myIntent.putExtra("photo",ArrayListApex.get(position).getImagePath());
                 myIntent.putExtra("content",ArrayListApex.get(position).getContent());
                 myIntent.putExtra("created_at",ArrayListApex.get(position).getCreated_at());
+                myIntent.putExtra("url",ArrayListApex.get(position).getUrl());
                 v.getContext().startActivity(myIntent);
             }
         };
