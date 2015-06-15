@@ -6,6 +6,10 @@
     <string name="action_settings">Settings</string>
     <string name="details">Подробнее</string>
     <string name="loading">Приложение загружается...</string>
+    <string name="archive">Архив</string>
+    <string name="main">На главную</string>
+    <string name="date">Дата размещения</string>
+    <string name="website">Посмотреть новость на сайте</string>
 
 
 </resources>

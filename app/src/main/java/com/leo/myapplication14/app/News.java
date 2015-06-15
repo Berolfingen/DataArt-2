@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.view.View;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import org.w3c.dom.Text;
 
 import java.io.File;
 
@@ -19,6 +17,7 @@ public class News extends Activity {
     ImageView newsPhoto;
     WebView newsContent;
     TextView newsDate;
+    TextView onSite;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_in_details);
@@ -26,6 +25,16 @@ public class News extends Activity {
         newsPhoto=(ImageView)findViewById(R.id.photodetails);
         newsContent=(WebView)findViewById(R.id.contentdetails);
         newsDate=(TextView)findViewById(R.id.datedetails);
+        onSite=(TextView)findViewById(R.id.website);
+        onSite.setClickable(true);
+        onSite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent myIntent = new Intent();
+                myIntent.setClass(News.this,Website.class);
+                //сюда передать еще url
+            }
+        });
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
         String imagePath = intent.getStringExtra("photo");

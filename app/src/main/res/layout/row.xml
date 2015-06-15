@@ -25,7 +25,7 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
+                android:textColor="@color/title_color"
                 android:text="TITLE"
                 android:gravity="center_horizontal"
                 android:textStyle="bold" android:textSize="20dp"/>
@@ -51,18 +51,18 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Дата размещения"
+            android:text="@string/date"
             android:id="@+id/date" android:layout_weight="0.04" android:layout_gravity="right"
             android:textSize="14dp"
-            android:textColor="#000000"/>
+            android:textColor="@color/date"
+            android:textStyle="bold"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/details"
             android:id="@+id/url"
-            android:textColorLink="#000000"
-            android:textColor="#00BFFF"
+            android:textColor="@color/read_more"
             android:textSize="18dp"
             android:textStyle="bold" android:layout_gravity="right"
             android:paddingBottom="3dp"/>

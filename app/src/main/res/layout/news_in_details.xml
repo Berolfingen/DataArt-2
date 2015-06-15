@@ -7,6 +7,8 @@
               android:orientation="vertical"
               android:weightSum="1"
               android:gravity="center_horizontal|fill"
+              android:background="@drawable/background_news"
+
         >
 
     <ScrollView
@@ -22,7 +24,7 @@
                     android:id="@+id/titledetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_color"
+                    android:textColor="@color/title_color"
                     android:text="TITLE"
                     android:gravity="center_horizontal"
                     android:textStyle="bold" android:textSize="20dp" android:layout_gravity="center_horizontal"/>
@@ -42,10 +44,19 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Дата размещения"
+                    android:text="@string/date"
                     android:id="@+id/datedetails" android:layout_weight="0.04" android:layout_gravity="right"
                     android:textSize="14dp"
-                    android:textColor="#000000"/>
+                    android:textColor="@color/date"
+                    android:textStyle="bold"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/website"
+                    android:id="@+id/website" android:layout_gravity="right"
+                    android:textColor="@color/onsite"
+                    android:textStyle="bold|italic"
+                    android:textSize="14dp"/>
 
 
         </LinearLayout>
