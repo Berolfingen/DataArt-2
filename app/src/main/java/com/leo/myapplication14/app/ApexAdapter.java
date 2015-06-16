@@ -70,7 +70,6 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(v.getContext(),News.class);
-               /* myIntent.putExtra("url",ArrayListApex.get(position).getUrl());*/
                 myIntent.putExtra("title",ArrayListApex.get(position).getTitle());
                 myIntent.putExtra("photo",ArrayListApex.get(position).getImagePath());
                 myIntent.putExtra("content",ArrayListApex.get(position).getContent());

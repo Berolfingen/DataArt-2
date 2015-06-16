@@ -12,10 +12,12 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.leo.myapplication14.app.gallery.Gallery_Main;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,12 +30,13 @@ import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends ActionBarActivity {
-    private static final int QUANTITY_OF_NEWS =50;
+    private static final int QUANTITY_OF_NEWS = 50;
     Context context = this;
     ListView list;
     ApexAdapter adapter;
-    ArrayList<Apex> apexArrayListFeatured;
-    ArrayList<Apex> apexArrayListArchive;
+    /*ArrayList<Apex> apexArrayListFeatured;
+    ArrayList<Apex> apexArrayListArchive;*/
+    ArrayList<Apex> full;
     ArrayList<String> newsIdInDB;
     ArrayList<String> fullIdJson;
     TextView archive;
@@ -60,13 +63,15 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         list = (ListView) findViewById(R.id.list);
-        apexArrayListFeatured = new ArrayList<>();
-        apexArrayListArchive = new ArrayList<>();
+       /* apexArrayListFeatured = new ArrayList<>();
+        apexArrayListArchive = new ArrayList<>();*/
+        full=new ArrayList<>();
         newsIdInDB = new ArrayList<>();
         fullIdJson = new ArrayList<>();
+
         if (isNetworkAvailable(context)) {
             db = new ApexSqlliteHelper(this);
-            newsIdInDB=db.getAllNewsId();
+            newsIdInDB = db.getAllNewsId();
             new ApexAsynTask().execute();
         } else {
             Toast.makeText(getApplicationContext(), "Internet connection is not available. App is loading data from the database",
@@ -79,7 +84,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    @Override
+   /* @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("apexFeatured", apexArrayListFeatured);
@@ -89,12 +94,33 @@ public class MainActivity extends ActionBarActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.gallery: {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, Gallery_Main.class);
+                ArrayList<Apex> fullApex = new ArrayList<>();
+               /* fullApex.addAll(apexArrayListFeatured);
+                fullApex.addAll(apexArrayListArchive);*/
+                fullApex.addAll(full);
+                intent.putParcelableArrayListExtra("fullApex",fullApex);
+                startActivity(intent);
+            }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+
     }
 
     private class ApexAsynTask extends AsyncTask<Void, Void, String> {
@@ -145,12 +171,11 @@ public class MainActivity extends ActionBarActivity {
                 for (int i = 0; i < QUANTITY_OF_NEWS; i++) {
                     Apex apex = new Apex();
                     JSONObject jRealObject = jArray.getJSONObject(i);
-                    String id= jRealObject.getString("id");
+                    String id = jRealObject.getString("id");
                     fullIdJson.add(id);
-                    if(newsIdInDB.contains(id)){
+                    if (newsIdInDB.contains(id)) {
                         continue;
-                    }
-                    else {
+                    } else {
                         apex.setIdNews(id);
                         apex.setTitle(jRealObject.getString("title"));
                         apex.setPhoto(jRealObject.getString("photo"));
@@ -160,7 +185,7 @@ public class MainActivity extends ActionBarActivity {
                         apex.setFeatured(jRealObject.getString("featured"));
                         apex.setUrl(jRealObject.getString("url"));
                         apex.setCreated_at(jRealObject.getString("created_at"));
-
+                        full.add(apex);
                         db.addApex(apex);
 
                        /* if (jRealObject.getString("featured").equals("true")) apexArrayListFeatured.add(apex);

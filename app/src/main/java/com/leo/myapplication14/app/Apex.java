@@ -1,7 +1,8 @@
 package com.leo.myapplication14.app;
 
 import android.os.Parcel;
-import android.os.Parcelable;
+import com.leo.myapplication14.app.gallery.GalleryImage;
+
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
@@ -9,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Apex implements Parcelable {
+public class Apex extends GalleryImage {
     int id;
     String idNews;
     String title;

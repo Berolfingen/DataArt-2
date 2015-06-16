@@ -141,10 +141,10 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Apex> getAllApex() {
-        List<Apex> apexes = new ArrayList<Apex>();
+    public ArrayList<Apex> getAllApex() {
+        ArrayList<Apex> apexes = new ArrayList<Apex>();
 
-        String query = "SELECT  * FROM " + TABLE_ApexNews+"ORDER BY "+KEY_CREATED_AT+" DESC;";
+        String query = "SELECT  * FROM " + TABLE_ApexNews+" ORDER BY "+KEY_CREATED_AT+" DESC;";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
