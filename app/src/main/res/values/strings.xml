@@ -10,6 +10,12 @@
     <string name="main">На главную</string>
     <string name="date">Дата размещения</string>
     <string name="website">Посмотреть новость на сайте</string>
-
+    <string name="authors"><b>Команда Apex News:</b>\n\n
+        Никита Соснов       <i>Ruby (RoR), backend</i>\n
+        Наталья Шереметьева <i>Ruby (RoR), backend</i>\n
+        Владислав Евсиков   <i>QA</i>\n
+        Ксения Зубилевич    <i>QA</i>\n
+        Леонид Мишуков      <i>Java (Android)</i>\n
+        Екатерина Кривцова  <i>Design</i>\n</string>
 
 </resources>

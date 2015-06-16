@@ -42,13 +42,14 @@ public class GalleryImage implements Parcelable {
         return title;
     }
 
-    public String getShortTitle(){
-        if(title.length()<20){
-            return title;
-        }
-        else {
-            title = title.substring(0, 20);
-            return title;
+    public String getShortTitle() {
+        String result = "";
+        if (title.length() < 20) {
+            result = title;
+            return result;
+        } else {
+            result = title.substring(0, 20);
+            return result;
         }
     }
 

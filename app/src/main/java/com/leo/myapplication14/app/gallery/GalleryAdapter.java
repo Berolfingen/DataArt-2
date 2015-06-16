@@ -3,11 +3,9 @@ package com.leo.myapplication14.app.gallery;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +13,6 @@ import com.leo.myapplication14.app.News;
 import com.leo.myapplication14.app.R;
 import com.leo.myapplication14.app.Splashscreen;
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -50,7 +47,7 @@ public class GalleryAdapter extends ArrayAdapter<GalleryImage> {
         }
 
         Picasso.with(context).load(new File(ArrayListGalleryImage.get(position).getImagePath()))
-                .resize(Splashscreen.screenWidth*7/30, Splashscreen.screenHeight /7)
+                .resize(Splashscreen.screenWidth * 7 / 30, Splashscreen.screenHeight / 7)
                 .placeholder(R.drawable.icon).error(R.drawable.placeholder).into(holder.gallery_image);
         holder.gallery_text.setText(ArrayListGalleryImage.get(position).getShortTitle());
 
@@ -70,7 +67,6 @@ public class GalleryAdapter extends ArrayAdapter<GalleryImage> {
         holder.gallery_text.setOnClickListener(ocUrl);
         return convertView;
     }
-
 
     static class ViewHolder {
         public ImageView gallery_image;

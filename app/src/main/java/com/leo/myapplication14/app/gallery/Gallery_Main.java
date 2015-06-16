@@ -25,7 +25,7 @@ public class Gallery_Main extends ActionBarActivity {
         gallery=(GridView)findViewById(R.id.gallery);
         images=new ArrayList<>();
         Intent intent = getIntent();
-       /* ArrayList<Apex> fullApex=intent.getParcelableArrayListExtra("fullApex");*/
+
         db = new ApexSqlliteHelper(context);
         ArrayList<Apex> full = db.getAllApex();
         for (int i = 0; i <full.size() ; i++) {
@@ -37,7 +37,6 @@ public class Gallery_Main extends ActionBarActivity {
             image.setImagePath(full.get(i).getImagePath());
             images.add(image);
         }
-
 
         adapter = new GalleryAdapter(context,R.layout.gallery_row, images);
         gallery.setAdapter(adapter);

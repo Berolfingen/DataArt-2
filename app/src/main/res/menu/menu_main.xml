@@ -15,18 +15,6 @@
               app:showAsAction="never" />
 
       <item
-              android:id="@+id/language"
-              android:orderInCategory="100"
-              android:title="Язык"
-              app:showAsAction="never" />
-
-      <item
-              android:id="@+id/login"
-              android:orderInCategory="100"
-              android:title="Авторизация"
-              app:showAsAction="never" />
-
-      <item
               android:id="@+id/fontsize"
               android:orderInCategory="100"
               android:title="Размер текста"
@@ -37,5 +25,11 @@
               android:orderInCategory="100"
               android:title="Отправить новость другу"
               app:showAsAction="never" />
+    <item
+            android:id="@+id/quantityNewsInDb"
+            android:orderInCategory="100"
+            android:title="Кол-во новостей в базе данных"
+            app:showAsAction="never"/>
+
 
 </menu>

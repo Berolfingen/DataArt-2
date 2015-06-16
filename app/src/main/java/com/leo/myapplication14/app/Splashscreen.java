@@ -50,26 +50,8 @@ public class Splashscreen extends Activity {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
-        },5000);
-
-       /* Thread timerThread = new Thread() {
-            public void run() {
-                try {
-                    sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally{
-                            Intent i = new Intent("com.leo.myapplication14.app.MainActivity");
-                            startActivity(i);
-                        }
-            }
-        };
-        timerThread.start();*/
+        }, 5000);
     }
-
-
-
-
 
     @Override
     protected void onPause() {

@@ -20,9 +20,5 @@ public class Website extends Activity {
         web.getSettings().setJavaScriptEnabled(true);
         web.loadUrl(url);
         web.setWebViewClient(new WebViewClient());
-
-
-
     }
-
 }
