@@ -70,7 +70,7 @@ public class MainActivity extends ActionBarActivity {
             new ApexAsynTask().execute();
         } else {
             Toast.makeText(getApplicationContext(), "Internet connection is not available. App is loading data from the database",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
             db = new ApexSqlliteHelper(this);
             ArrayList<Apex> archive = db.getFetchedNews();
             ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive, true);
@@ -176,8 +176,8 @@ public class MainActivity extends ActionBarActivity {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-            db.checkOnUpdates(fullIdJson);
             pdia.dismiss();
+            db.checkOnUpdates(fullIdJson);
             db = new ApexSqlliteHelper(context);
             ArrayList<Apex> archive = db.getFetchedNews();
             ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive, true);

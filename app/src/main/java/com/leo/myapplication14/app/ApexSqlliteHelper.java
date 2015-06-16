@@ -20,7 +20,7 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_APEX_TABLE = "CREATE TABLE apexNews(_id INTEGER PRIMARY KEY, idNews TEXT unique, title TEXT, content TEXT, shortContent Text, featured TEXT, created_at TEXT, photopath TEXT, url TEXT);";
+        String CREATE_APEX_TABLE = "CREATE TABLE apexNews(_id INTEGER PRIMARY KEY, idNews TEXT unique, title TEXT, content TEXT, shortContent Text, featured TEXT, created_at DATETIME, photopath TEXT, url TEXT);";
 
 
         db.execSQL(CREATE_APEX_TABLE);
@@ -144,7 +144,7 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
     public List<Apex> getAllApex() {
         List<Apex> apexes = new ArrayList<Apex>();
 
-        String query = "SELECT  * FROM " + TABLE_ApexNews;
+        String query = "SELECT  * FROM " + TABLE_ApexNews+"ORDER BY "+KEY_CREATED_AT+" DESC;";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
@@ -196,7 +196,7 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
         ArrayList<Apex> apexes = new ArrayList<Apex>();
 
         // 1. build the query
-        String query = "SELECT  * FROM " + TABLE_ApexNews + " WHERE featured = 'false';";
+        String query = "SELECT  * FROM " + TABLE_ApexNews + " WHERE featured = 'false' ORDER BY "+KEY_CREATED_AT+" DESC;";
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
@@ -222,8 +222,8 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
                 Log.d("getAllApex()", apex.toString());
             } while (cursor.moveToNext());
         }
-         cursor.close();
-         db.close();
+        cursor.close();
+        db.close();
 
         return apexes;
     }
@@ -232,7 +232,7 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
         ArrayList<Apex> apexes = new ArrayList<Apex>();
 
         // 1. build the query
-        String query = "SELECT  * FROM " + TABLE_ApexNews + " WHERE featured = 'true';";
+        String query = "SELECT  * FROM " + TABLE_ApexNews + " WHERE featured = 'true' ORDER BY "+KEY_CREATED_AT+" DESC;";
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();

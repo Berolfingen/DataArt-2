@@ -55,7 +55,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
                 .error(R.drawable.placeholder)
                 .into(holder.photo);}
         holder.title.setText(ArrayListApex.get(position).getTitle());
-        holder.date.setText("Дата размещения "+ArrayListApex.get(position).getCreated_at());
+        holder.date.setText("Дата размещения "+ArrayListApex.get(position).getCreated_atFormatted());
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
         String html=ArrayListApex.get(position).getShortContent();
@@ -74,7 +74,7 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
                 myIntent.putExtra("title",ArrayListApex.get(position).getTitle());
                 myIntent.putExtra("photo",ArrayListApex.get(position).getImagePath());
                 myIntent.putExtra("content",ArrayListApex.get(position).getContent());
-                myIntent.putExtra("created_at",ArrayListApex.get(position).getCreated_at());
+                myIntent.putExtra("created_at",ArrayListApex.get(position).getCreated_atFormatted());
                 myIntent.putExtra("url",ArrayListApex.get(position).getUrl());
                 v.getContext().startActivity(myIntent);
             }

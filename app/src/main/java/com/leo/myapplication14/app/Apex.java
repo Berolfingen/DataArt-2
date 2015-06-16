@@ -87,6 +87,10 @@ public class Apex implements Parcelable {
     }
 
     public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getCreated_atFormatted() {
         String data = created_at.substring(0, 10);
         Locale russian = new Locale("ru");
         String[] newMonths = {
