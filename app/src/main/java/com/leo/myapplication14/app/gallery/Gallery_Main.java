@@ -1,6 +1,5 @@
 package com.leo.myapplication14.app.gallery;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.widget.GridView;
 import com.leo.myapplication14.app.Apex;
 import com.leo.myapplication14.app.ApexSqlliteHelper;
 import com.leo.myapplication14.app.R;
-
 import java.util.ArrayList;
 
 public class Gallery_Main extends ActionBarActivity {

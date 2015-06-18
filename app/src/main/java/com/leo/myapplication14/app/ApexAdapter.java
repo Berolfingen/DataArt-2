@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -59,6 +58,12 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
                     .error(R.drawable.placeholder)
                     .into(holder.photo);
         }
+        if(ArrayListApex.get(position).getFeatured().equals("true")){
+            holder.title.setTextColor(Color.parseColor("#DF0101"));
+        }
+        else{
+            holder.title.setTextColor(Color.parseColor("#9933cc"));
+        }
         holder.title.setText(ArrayListApex.get(position).getTitle());
         holder.date.setText("Дата размещения " + ArrayListApex.get(position).getCreated_atFormatted());
         final String mimeType = "text/html";
@@ -97,6 +102,4 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         public TextView date;
     }
 }
-
-
 

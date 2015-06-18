@@ -1,35 +1,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context=".MainActivity">
-      <item
-              android:id="@+id/gallery"
-              android:orderInCategory="100"
-              android:title="Галерея"
-              app:showAsAction="never" />
-
-      <item
-              android:id="@+id/authors"
-              android:orderInCategory="100"
-              android:title="Об авторах"
-              app:showAsAction="never" />
-
-      <item
-              android:id="@+id/fontsize"
-              android:orderInCategory="100"
-              android:title="Размер текста"
-              app:showAsAction="never" />
-
-      <item
-              android:id="@+id/sendByEmail"
-              android:orderInCategory="100"
-              android:title="Отправить новость другу"
-              app:showAsAction="never" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
     <item
-            android:id="@+id/quantityNewsInDb"
-            android:orderInCategory="100"
-            android:title="Кол-во новостей в базе данных"
-            app:showAsAction="never"/>
+        android:id="@+id/gallery"
+        android:orderInCategory="100"
+        android:title="Галерея"
+        app:showAsAction="never" />
 
+    <item
+        android:id="@+id/authors"
+        android:orderInCategory="100"
+        android:title="Об авторах"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/quantity"
+        android:orderInCategory="100"
+        android:title="Кол-во новостей в базе данных"
+        app:showAsAction="never" />
 
 </menu>

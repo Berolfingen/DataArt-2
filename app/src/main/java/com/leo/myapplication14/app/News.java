@@ -20,6 +20,10 @@ public class News extends Activity {
     TextView newsDate;
     TextView onSite;
     String url;
+    String title;
+    String imagePath;
+    String content;
+    String created;
     Context context = this;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +37,10 @@ public class News extends Activity {
         onSite.setClickable(true);
 
         Intent intent = getIntent();
-        String title = intent.getStringExtra("title");
-        String imagePath = intent.getStringExtra("photo");
-        String content = intent.getStringExtra("content");
-        String created = intent.getStringExtra("created_at");
+        title = intent.getStringExtra("title");
+        imagePath = intent.getStringExtra("photo");
+        content = intent.getStringExtra("content");
+        created = intent.getStringExtra("created_at");
         url = intent.getStringExtra("url");
 
         onSite.setOnClickListener(new View.OnClickListener() {
@@ -70,3 +74,4 @@ public class News extends Activity {
                 .into(newsPhoto);
     }
 }
+

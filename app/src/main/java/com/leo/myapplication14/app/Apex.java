@@ -25,28 +25,12 @@ public class Apex extends GalleryImage {
     public Apex() {
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getIdNews() {
         return idNews;
     }
 
     public void setIdNews(String idNews) {
         this.idNews = idNews;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getPhoto() {
@@ -58,7 +42,11 @@ public class Apex extends GalleryImage {
     }
 
     public String getContent() {
-        return "<html>" + content + "</html>";
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getShortContent() {
@@ -79,16 +67,12 @@ public class Apex extends GalleryImage {
         this.shortContent = shortContent;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getCreated_at() {
         return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
     public String getCreated_atFormatted() {
@@ -111,16 +95,8 @@ public class Apex extends GalleryImage {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
     private boolean isCyrillic(char c) {
         return Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(c));
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public String getFeatured() {
@@ -129,14 +105,6 @@ public class Apex extends GalleryImage {
 
     public void setFeatured(String featured) {
         this.featured = featured;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
     @Override

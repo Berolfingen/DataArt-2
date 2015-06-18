@@ -1,6 +1,5 @@
 package com.leo.myapplication14.app.gallery;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import com.leo.myapplication14.app.News;
 import com.leo.myapplication14.app.R;
 import com.leo.myapplication14.app.Splashscreen;
 import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.util.ArrayList;
 

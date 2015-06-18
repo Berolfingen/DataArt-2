@@ -15,30 +15,32 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.leo.myapplication14.app.gallery.Gallery_Main;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.HashMap;
 
 
 public class MainActivity extends ActionBarActivity {
-    public static final int QUANTITY_OF_NEWS_IN_DB = 50;
+    public static int QUANTITY_OF_NEWS_IN_DB;
     Context context = this;
     ListView list;
-    ApexAdapter adapter;
     ArrayList<Apex> full;
     ArrayList<String> newsIdInDB;
     ArrayList<String> fullIdJson;
     TextView archive;
     ApexSqlliteHelper db;
+    HashMap<String, String> id_updated;
+    EditText edit;
+    String value;
     private ProgressDialog pdia;
 
     @Override
@@ -46,6 +48,12 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = new ApexSqlliteHelper(this);
+        if(db.getProfilesCount()<1) {
+            db = new ApexSqlliteHelper(this);
+            db.addQ();
+        }
+        QUANTITY_OF_NEWS_IN_DB = db.getQuan();
+        Log.d("q",Integer.toString(QUANTITY_OF_NEWS_IN_DB));
         archive = (TextView) findViewById(R.id.archive);
         archive.setClickable(true);
         archive.setOnClickListener(new View.OnClickListener() {
@@ -59,34 +67,22 @@ public class MainActivity extends ActionBarActivity {
         });
         list = (ListView) findViewById(R.id.list);
         full = new ArrayList<>();
+        id_updated = new HashMap<>();
         newsIdInDB = new ArrayList<>();
         fullIdJson = new ArrayList<>();
 
         if (isNetworkAvailable(context)) {
             db = new ApexSqlliteHelper(this);
             newsIdInDB = db.getAllNewsId();
+            id_updated = db.getUpdatedDatesToId(newsIdInDB);
+
             new ApexAsynTask().execute();
         } else {
             Toast.makeText(getApplicationContext(), "Internet connection is not available. App is loading data from the database",
                     Toast.LENGTH_LONG).show();
-            db = new ApexSqlliteHelper(this);
-            ArrayList<Apex> archive = db.getFetchedNews();
-            ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive, true);
-            list.setAdapter(adapter);
+            setAdapterToMain();
         }
     }
-
-   /* @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("apexFeatured", apexArrayListFeatured);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,20 +100,53 @@ public class MainActivity extends ActionBarActivity {
                 fullApex.addAll(full);
                 intent.putParcelableArrayListExtra("fullApex", fullApex);
                 startActivity(intent);
+                return true;
             }
-
             case R.id.authors: {
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.aboutauthors);
                 TextView authors = (TextView) findViewById(R.id.authors);
                 dialog.show();
+                return true;
+            }
+            case R.id.quantity: {
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.quantitynews);
+                edit = (EditText) dialog.findViewById(R.id.edit);
+                Button button = (Button) dialog.findViewById(R.id.button);
+                TextView textView = (TextView) findViewById(R.id.textView);
+                dialog.show();
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        value = edit.getText().toString();
+                        try {
+                            int quantity = Integer.parseInt(value);
+                            if (quantity <= 0 || quantity > 200) {
+                                Toast.makeText(getApplicationContext(), "Your data is incorrect",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                db = new ApexSqlliteHelper(getApplicationContext());
+                                db.updateQuan(quantity);
+                                finish();
+                                startActivity(getIntent());
+                            }
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(getApplicationContext(), "That is not a number",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
+                return true;
             }
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private class ApexAsynTask extends AsyncTask<Void, Void, String> {
+    private class ApexAsynTask extends AsyncTask<Void, Void, Void> {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -133,8 +162,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
-
+        protected Void doInBackground(Void... params) {
             try {
                 URL url = new URL("http://apex-news.herokuapp.com/all.json");
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -151,83 +179,70 @@ public class MainActivity extends ActionBarActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return resultJson;
-        }
 
-        @Override
-        protected void onPostExecute(String strJson) {
-            super.onPostExecute(strJson);
             JSONArray jArray;
-
             try {
-                jArray = new JSONArray(strJson);
-
+                jArray = new JSONArray(resultJson);
                 for (int i = 0; i < QUANTITY_OF_NEWS_IN_DB; i++) {
                     Apex apex = new Apex();
                     JSONObject jRealObject = jArray.getJSONObject(i);
                     String id = jRealObject.getString("id");
+                    String updated_at = jRealObject.getString("updated_at");
                     fullIdJson.add(id);
                     if (newsIdInDB.contains(id)) {
-                        continue;
+                        if (updated_at.equals(id_updated.get(id))) {
+                            continue;
+                        } else {
+                            apex.setIdNews(id);
+                            getApexValuesJson(apex, jRealObject);
+                            apex.setUpdated_at(updated_at);
+                            db.updateApex(apex);
+                        }
                     } else {
                         apex.setIdNews(id);
-                        apex.setTitle(jRealObject.getString("title"));
-                        apex.setPhoto(jRealObject.getString("photo"));
-                        apex.setContent(jRealObject.getString("content"));
-                        apex.setImagePath(saveToInternalSorage(new BackTask().execute(jRealObject.getString("photo")).get(), "image" + jRealObject.getString("title")));
-                        apex.setUrl(jRealObject.getString("url"));
-                        apex.setFeatured(jRealObject.getString("featured"));
-                        apex.setUrl(jRealObject.getString("url"));
-                        apex.setCreated_at(jRealObject.getString("created_at"));
+                        getApexValuesJson(apex, jRealObject);
+                        apex.setUpdated_at(updated_at);
                         full.add(apex);
                         db.addApex(apex);
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
             }
-            pdia.dismiss();
             db.checkOnUpdates(fullIdJson);
-            db = new ApexSqlliteHelper(context);
-            ArrayList<Apex> archive = db.getFetchedNews();
-            ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive, true);
-            list.setAdapter(adapter);
-        }
-    }
-
-    private class BackTask extends AsyncTask<String, Void, Bitmap> {
-
-        protected Bitmap doInBackground(String... params) {
-            Bitmap bitmap = null;
-            try {
-                URL url = new URL(params[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream is = connection.getInputStream();
-
-                final BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = false;
-                options.inSampleSize = 4;
-                bitmap = BitmapFactory.decodeStream(is, null, options);
-                is.close();
-            } catch (IOException e) {
-                Log.d("IO ", e.toString());
-            }
-            return bitmap;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
+        protected void onPostExecute(Void avoid) {
+            super.onPostExecute(avoid);
+            if (pdia.isShowing()) pdia.dismiss();
+
+            setAdapterToMain();
         }
     }
 
-    private String saveToInternalSorage(Bitmap bitmapImage, String id) {
+    protected Bitmap downloadBitmap(String path) {
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(path);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream is = connection.getInputStream();
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = 4;
+            bitmap = BitmapFactory.decodeStream(is, null, options);
+            is.close();
+        } catch (IOException e) {
+            Log.d("IO ", e.toString());
+        }
+        return bitmap;
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage, String id) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
@@ -246,5 +261,46 @@ public class MainActivity extends ActionBarActivity {
 
     public static boolean isNetworkAvailable(Context context) {
         return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+    }
+
+   /* public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com"); //You can replace it with your name
+
+            if (ipAddr.equals("")) {
+                return false;
+            } else {
+                return true;
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
+    }*/
+
+    public void getApexValuesJson(Apex apex, JSONObject jRealObject) {
+        try {
+            apex.setTitle(jRealObject.getString("title"));
+            apex.setPhoto(jRealObject.getString("photo"));
+            apex.setContent(jRealObject.getString("content"));
+            apex.setImagePath(saveToInternalStorage(downloadBitmap(jRealObject.getString("photo")), "image" + jRealObject.getString("title")));
+            apex.setUrl(jRealObject.getString("url"));
+            apex.setFeatured(jRealObject.getString("featured"));
+            apex.setMain(jRealObject.getString("main"));
+            apex.setCreated_at(jRealObject.getString("created_at"));
+        } catch (JSONException e) {
+            Log.d("json", e.getMessage());
+        }
+    }
+
+    public void setAdapterToMain() {
+        db = new ApexSqlliteHelper(this);
+        ArrayList<Apex> fullMain = new ArrayList<>();
+        ArrayList<Apex> fetched = db.getFetchedNews();
+        ArrayList<Apex> mainNotFetched = db.getMainMotFetchedNews();
+        fullMain.addAll(fetched);
+        fullMain.addAll(mainNotFetched);
+        ApexAdapter adapter = new ApexAdapter(context, R.layout.row, fullMain, true);
+        list.setAdapter(adapter);
     }
 }

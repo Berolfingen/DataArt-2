@@ -1,9 +1,7 @@
 package com.leo.myapplication14.app.gallery;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
@@ -18,6 +16,8 @@ public class GalleryImage implements Parcelable {
     String content;
     String created_at;
     String url;
+    String updated_at;
+    String main;
 
     public GalleryImage() {
     }
@@ -113,5 +113,21 @@ public class GalleryImage implements Parcelable {
         dest.writeString(content);
         dest.writeString(created_at);
         dest.writeString(url);
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public String getMain() {
+        return main;
+    }
+
+    public void setMain(String main) {
+        this.main = main;
     }
 }
