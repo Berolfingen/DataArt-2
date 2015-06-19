@@ -74,4 +74,3 @@ public class News extends Activity {
                 .into(newsPhoto);
     }
 }
-

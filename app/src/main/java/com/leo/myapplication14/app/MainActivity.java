@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -23,9 +24,9 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -42,17 +43,25 @@ public class MainActivity extends ActionBarActivity {
     EditText edit;
     String value;
     private ProgressDialog pdia;
+    private static final String MY_PREFERENCES = "my_preferences";
+    private static final String QUANTITY_IN_DB = "quantityInDb";
+    SharedPreferences myPref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = new ApexSqlliteHelper(this);
-        if(db.getProfilesCount()<1) {
-            db = new ApexSqlliteHelper(this);
-            db.addQ();
+        myPref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        editor = getSharedPreferences(MY_PREFERENCES, MODE_PRIVATE).edit();
+
+
+        if (isFirst(MainActivity.this)) {
+            editor.putInt(QUANTITY_IN_DB, 50);
+            editor.apply();
         }
-        QUANTITY_OF_NEWS_IN_DB = db.getQuan();
+        QUANTITY_OF_NEWS_IN_DB = myPref.getInt(QUANTITY_IN_DB, 0);
         Log.d("q",Integer.toString(QUANTITY_OF_NEWS_IN_DB));
         archive = (TextView) findViewById(R.id.archive);
         archive.setClickable(true);
@@ -72,13 +81,18 @@ public class MainActivity extends ActionBarActivity {
         fullIdJson = new ArrayList<>();
 
         if (isNetworkAvailable(context)) {
+            Date date = new Date(System.currentTimeMillis());
+            editor.putLong("time", date.getTime());
+            editor.apply();
             db = new ApexSqlliteHelper(this);
             newsIdInDB = db.getAllNewsId();
             id_updated = db.getUpdatedDatesToId(newsIdInDB);
 
             new ApexAsynTask().execute();
+
         } else {
-            Toast.makeText(getApplicationContext(), "Internet connection is not available. App is loading data from the database",
+            Toast.makeText(getApplicationContext(), "Internet connection is not available. App is loading data from the database." +
+                            "Last update was on " + myPref.getString("time", ""),
                     Toast.LENGTH_LONG).show();
             setAdapterToMain();
         }
@@ -126,8 +140,8 @@ public class MainActivity extends ActionBarActivity {
                                 Toast.makeText(getApplicationContext(), "Your data is incorrect",
                                         Toast.LENGTH_SHORT).show();
                             } else {
-                                db = new ApexSqlliteHelper(getApplicationContext());
-                                db.updateQuan(quantity);
+                                editor.putInt(QUANTITY_IN_DB, quantity);
+                                editor.apply();
                                 finish();
                                 startActivity(getIntent());
                             }
@@ -266,13 +280,11 @@ public class MainActivity extends ActionBarActivity {
    /* public boolean isInternetAvailable() {
         try {
             InetAddress ipAddr = InetAddress.getByName("google.com"); //You can replace it with your name
-
             if (ipAddr.equals("")) {
                 return false;
             } else {
                 return true;
             }
-
         } catch (Exception e) {
             return false;
         }
@@ -303,4 +315,17 @@ public class MainActivity extends ActionBarActivity {
         ApexAdapter adapter = new ApexAdapter(context, R.layout.row, fullMain, true);
         list.setAdapter(adapter);
     }
+
+    public static boolean isFirst(Context context) {
+        final SharedPreferences reader = context.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        final boolean first = reader.getBoolean("is_first", true);
+        if (first) {
+            final SharedPreferences.Editor editor = reader.edit();
+            editor.putBoolean("is_first", false);
+            editor.commit();
+        }
+        return first;
+    }
 }
+
+

@@ -24,91 +24,13 @@ public class ApexSqlliteHelper extends SQLiteOpenHelper {
                 "created_at DATETIME, updated_at DATETIME, photopath TEXT, url TEXT, main TEXT);";
 
         db.execSQL(CREATE_APEX_TABLE);
-
-        String CREATE_OPTIONS_TABLE = "CREATE TABLE options(_id INTEGER PRIMARY KEY, dbQuan INTEGER DEFAULT 50);";
-        db.execSQL(CREATE_OPTIONS_TABLE);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS apexNews");
-        db.execSQL("DROP TABLE IF EXISTS options");
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {        db.execSQL("DROP TABLE IF EXISTS apexNews");
+
         onCreate(db);
     }
-
-    private static final String TABLE_OPTIONS = "options";
-    private static final String KEY_ID1 = "_id";
-    private static final String KEY_QUAN = "dbQuan";
-    private static final String[] COLUMNS1 = {KEY_ID1, KEY_QUAN};
-
-    public int getQuan() {
-        int result= 0;
-
-        String query = "SELECT  dbQuan FROM " + TABLE_OPTIONS + ";";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-
-        if (cursor.moveToFirst()) {
-
-                result = Integer.parseInt(cursor.getString(0));
-
-        }
-        cursor.close();
-        db.close();
-        return result;
-    }
-
-    public int updateQuan(int quan) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_QUAN, quan);
-        int i = db.update(TABLE_OPTIONS, values, KEY_ID1 + " =1",null);
-        db.close();
-        Log.d("q","From update method "+i);
-        return i;
-    }
-
-    public ArrayList<String> getQ() {
-        SQLiteDatabase mDataBase;
-        mDataBase = getReadableDatabase();
-        ArrayList<String> list = new ArrayList<>();
-        Cursor  cursor = mDataBase.rawQuery("select * from options",null);
-
-        if(cursor.moveToFirst()){            do{
-
-                String column1 = cursor.getString(0);
-                list.add(column1);
-                String column2 = cursor.getString(1);
-                list.add(column2);
-
-            }while(cursor.moveToNext());
-        }
-        cursor.close();
-        mDataBase.close();
-        Log.d("q","What is in "+list.toString());
-        Log.d("q","SIZE "+list.size());
-        return list;
-    }
-
-    public void addQ(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(KEY_QUAN,50);
-        Log.d("q","add");
-        db.insert(TABLE_OPTIONS,null,contentValues);
-        db.close();
-    }
-
-    public int getProfilesCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_OPTIONS;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        int cnt = cursor.getCount();
-        cursor.close();
-        return cnt;
-    }
-
 
     private static final String TABLE_ApexNews = "apexNews";
     private static final String KEY_ID = "_id";

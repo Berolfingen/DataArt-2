@@ -102,4 +102,3 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         public TextView date;
     }
 }
-
