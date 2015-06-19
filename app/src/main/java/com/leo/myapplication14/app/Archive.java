@@ -22,7 +22,7 @@ public class Archive extends Activity {
         main = (TextView) findViewById(R.id.main);
         db = new ApexSqlliteHelper(this);
         ArrayList<Apex> archive = db.getArchiveNews();
-        ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive, true);
+        ApexAdapter adapter = new ApexAdapter(context, R.layout.row, archive);
         list1.setAdapter(adapter);
         main.setClickable(true);
         main.setOnClickListener(new View.OnClickListener() {

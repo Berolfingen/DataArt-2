@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,7 +64,7 @@ public class MainActivity extends ActionBarActivity {
             editor.apply();
         }
         QUANTITY_OF_NEWS_IN_DB = myPref.getInt(QUANTITY_IN_DB, 0);
-        Log.d("q",Integer.toString(QUANTITY_OF_NEWS_IN_DB));
+        Log.d("q", Integer.toString(QUANTITY_OF_NEWS_IN_DB));
         archive = (TextView) findViewById(R.id.archive);
         archive.setClickable(true);
         archive.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +93,11 @@ public class MainActivity extends ActionBarActivity {
             new ApexAsynTask().execute();
 
         } else {
+            long millis=myPref.getLong("time",0L);
+            Date date = new Date(millis);
             Toast.makeText(getApplicationContext(), "Internet connection is not available. App is loading data from the database." +
-                            "Last update was on " + myPref.getString("time", ""),
+                            "Last update was on " + date.getDate()+" "+date.getMonth()+" "+date.getYear()+" "+date.getHours()+
+                            ":"+date.getMinutes(),
                     Toast.LENGTH_LONG).show();
             setAdapterToMain();
         }
@@ -101,6 +106,16 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        MenuItem item = menu.findItem(R.id.quantity);
+
+        if (!isNetworkAvailable(context))
+            item.setEnabled(false);
+        super.onPrepareOptionsMenu(menu);
         return true;
     }
 
@@ -277,7 +292,7 @@ public class MainActivity extends ActionBarActivity {
         return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
     }
 
-   /* public boolean isInternetAvailable() {
+    public boolean isInternetAvailable() {
         try {
             InetAddress ipAddr = InetAddress.getByName("google.com"); //You can replace it with your name
             if (ipAddr.equals("")) {
@@ -288,7 +303,7 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
             return false;
         }
-    }*/
+    }
 
     public void getApexValuesJson(Apex apex, JSONObject jRealObject) {
         try {
@@ -312,7 +327,7 @@ public class MainActivity extends ActionBarActivity {
         ArrayList<Apex> mainNotFetched = db.getMainMotFetchedNews();
         fullMain.addAll(fetched);
         fullMain.addAll(mainNotFetched);
-        ApexAdapter adapter = new ApexAdapter(context, R.layout.row, fullMain, true);
+        ApexAdapter adapter = new ApexAdapter(context, R.layout.row, fullMain);
         list.setAdapter(adapter);
     }
 
@@ -325,6 +340,19 @@ public class MainActivity extends ActionBarActivity {
             editor.commit();
         }
         return first;
+    }
+
+    public static boolean isOnline(Context ctx) {
+        if (ctx == null)
+            return false;
+
+        ConnectivityManager cm =
+                (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 }
 

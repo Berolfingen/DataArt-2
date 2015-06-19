@@ -19,14 +19,12 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
     int Resource;
     Context context;
     LayoutInflater vi;
-    Boolean b;
 
-    public ApexAdapter(Context context, int resource, ArrayList<Apex> objects, Boolean b) {
+    public ApexAdapter(Context context, int resource, ArrayList<Apex> objects) {
         super(context, resource, objects);
         ArrayListApex = objects;
         Resource = resource;
         this.context = context;
-        this.b = b;
         vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -48,16 +46,16 @@ public class ApexAdapter extends ArrayAdapter<Apex> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if (b == true) {
+
             Picasso.with(context).load(new File(ArrayListApex.get(position).getImagePath())).resize(Splashscreen.screenWidth, Splashscreen.screenHeight / 2)
                     .placeholder(R.drawable.icon).error(R.drawable.placeholder).into(holder.photo);
-        } else {
+         /*else {
             Picasso.with(context).load(ArrayListApex.get(position).getPhoto())
                     .resize(Splashscreen.screenWidth, Splashscreen.screenHeight / 2)
                     .placeholder(R.drawable.icon)
                     .error(R.drawable.placeholder)
                     .into(holder.photo);
-        }
+        }*/
         if(ArrayListApex.get(position).getFeatured().equals("true")){
             holder.title.setTextColor(Color.parseColor("#DF0101"));
         }
