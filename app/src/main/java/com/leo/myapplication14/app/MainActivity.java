@@ -2,10 +2,7 @@ package com.leo.myapplication14.app;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -93,11 +90,11 @@ public class MainActivity extends ActionBarActivity {
             new ApexAsynTask().execute();
 
         } else {
-            long millis=myPref.getLong("time",0L);
+            long millis = myPref.getLong("time", 0L);
             Date date = new Date(millis);
             Toast.makeText(getApplicationContext(), "Internet connection is not available. App is loading data from the database." +
-                            "Last update was on " + date.getDate()+" "+date.getMonth()+" "+date.getYear()+" "+date.getHours()+
-                            ":"+date.getMinutes(),
+                            "Last update was on " + date.getDate() + " " + date.getMonth() + " " + date.getYear() + " " + date.getHours() +
+                            ":" + date.getMinutes(),
                     Toast.LENGTH_LONG).show();
             setAdapterToMain();
         }
@@ -110,7 +107,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu (Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.quantity);
 
         if (!isNetworkAvailable(context))
@@ -166,7 +163,6 @@ public class MainActivity extends ActionBarActivity {
                         }
                     }
                 });
-
 
                 return true;
             }
@@ -342,7 +338,7 @@ public class MainActivity extends ActionBarActivity {
         return first;
     }
 
-    public static boolean isOnline(Context ctx) {
+   /* public static boolean isOnline(Context ctx) {
         if (ctx == null)
             return false;
 
@@ -353,7 +349,9 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return false;
-    }
+    }*/
+
+
 }
 
 
